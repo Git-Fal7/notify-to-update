@@ -40,6 +40,6 @@ int main() {
 			system(("notify-send -i /usr/share/icons/Papirus-Dark/32x32/emblems/emblem-downloads.svg 'Updates Avaliable' 'Open Synaptic, " + uptxt + " avaliable'").c_str());
 		}
 		//Minutes * 60 seconds in microseconds
-		usleep(1 * microminute);
+		usleep(150 * microminute);
 	}
 }
