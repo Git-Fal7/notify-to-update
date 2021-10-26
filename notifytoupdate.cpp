@@ -8,36 +8,38 @@
 #include <stdio.h>
 #include <string>
 #include <unistd.h>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
-//Using popen to output
-string popenStdout(string cmd) {
+string otToString(string cmd) {
+	char *command = (char *) (cmd + " > /tmp/fileUTO22.txt").c_str();
+	system(command);
 	string data;
-	FILE* stream;
-	const int max_buffer = 256;
-	char buffer[max_buffer];
-	cmd.append(" 2>&1");
 
-	stream = popen(cmd.c_str(), "r");
+	ifstream file("/tmp/fileUTO22.txt"); 
 
-	if (stream) {
-		while (!feof(stream)) {
-			if (fgets(buffer, max_buffer, stream) != NULL)
-				data.append(buffer);
-		}
-		pclose (stream);
+	if (file.is_open()) {
+		file >> data;
 	}
+
 	return data;
 }
 
+
 int main() {
-	unsigned int microminutes = 60000000;
+	unsigned int microminute = 60000000;
 	while (true) {
-		string out = popenStdout("apt-get -o DEbug::NoLocking=true --trivial-only -V dist-upgrade");
-		//If output doesn't contain this, send notification
-		if (out.find("0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.") == string::npos)
-			system("notify-send -i /usr/share/icons/Papirus-Dark/32x32/emblems/emblem-downloads.svg 'Updates Avaliable' 'Please open synaptic and update'");
+		string out = otToString("apt-get -q -y --ignore-hold --allow-change-held-packages --allow-unauthenticated -s dist-upgrade | /bin/grep  ^Inst | wc -l");
+		if (out != "0"){
+			string uptxt;
+			if (out == "1")
+				uptxt = "an update is";
+			else 
+				uptxt = (oof + "updates are");
+			system(("notify-send -i /usr/share/icons/Papirus-Dark/32x32/emblems/emblem-downloads.svg 'Updates Avaliable' 'Open Synaptic, " + uptxt + " avaliable'").c_str());
+		}
 		//Minutes * 60 seconds in microseconds
-		usleep(150 * microminutes);
+		usleep(1 * microminute);
 	}
 }
