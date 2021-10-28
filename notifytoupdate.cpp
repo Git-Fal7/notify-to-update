@@ -36,7 +36,7 @@ int main() {
 			if (out == "1")
 				uptxt = "an update is";
 			else 
-				uptxt = (oof + "updates are");
+				uptxt = (out + "updates are");
 			system(("notify-send -i /usr/share/icons/Papirus-Dark/32x32/emblems/emblem-downloads.svg 'Updates Avaliable' 'Open Synaptic, " + uptxt + " avaliable'").c_str());
 		}
 		//Minutes * 60 seconds in microseconds
